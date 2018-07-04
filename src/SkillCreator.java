@@ -54,14 +54,12 @@ public class SkillCreator extends Application {
 	private Label healLowLabel = new Label("Heal Low: ");
 	
 	private Label playerLabel = new Label("Player Position:");
-	//private ToggleGroup playerPosGroup = new ToggleGroup();
     private RadioButton player1 = new RadioButton("");
     private RadioButton player2 = new RadioButton("");
     private RadioButton player3 = new RadioButton("");
     private RadioButton player4 = new RadioButton("");
     private HBox playerHBox = new HBox();
     
-   // private ToggleGroup enemyPosGroup = new ToggleGroup();
     private RadioButton enemy1 = new RadioButton("");
     private RadioButton enemy2 = new RadioButton("");
     private RadioButton enemy3 = new RadioButton("");
@@ -181,7 +179,7 @@ public class SkillCreator extends Application {
 							tempGetAttackStyle = damageTypeCombo.getValue().toString();
 							tempGetAttackStyle = tempGetAttackStyle.toLowerCase();
 							
-							fullSkillCode = fullSkillCode + "combat_skill: .id \"" + skillNameTextField.getText().toString() + "\" .level 1";
+							fullSkillCode = fullSkillCode + "combat_skill: .id \"" + skillNameTextField.getText().toString() + "\" .level 0";
 							String tempAttackTextField = null;
 							String tempDamageTextField = null;
 							String tempCritTextField = null;
@@ -346,7 +344,7 @@ public class SkillCreator extends Application {
 									int tempTotalHealHigh = tempHealHighInt;
 									int tempTotalHealLow = tempHealLowInt;
 									
-									for(int i = 1; i < 5; i++) {
+									for(int i = 0; i < 4; i++) {
 										int tempLevelUp = i + 1;
 										tempNextLevelCode = tempNextLevelCode.replaceAll(".level " + i, ".level " + tempLevelUp);
 										
@@ -406,7 +404,7 @@ public class SkillCreator extends Application {
 									int tempTotalDamage = tempDamage;
 									int tempTotalCrit = tempCrit;
 								
-									for(int i = 1; i < 5; i++) {
+									for(int i = 0; i < 4; i++) {
 										int tempLevelUp = i + 1;
 										tempNextLevelCode = tempNextLevelCode.replaceAll(".level " + i, ".level " + tempLevelUp);
 										
