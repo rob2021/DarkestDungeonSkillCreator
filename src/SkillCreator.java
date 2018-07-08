@@ -8,6 +8,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.*;
 import java.awt.datatransfer.*;
 import javafx.scene.control.Alert;
@@ -33,10 +36,12 @@ public class SkillCreator extends Application {
 	
 	private TextField skillNameTextField = new TextField();
 	private Label skillNameLabel = new Label("Skill Name: ");
-	private ComboBox<String> damageTypeCombo = new ComboBox<String>();
-	private ComboBox<String> targetTypeCombo = new ComboBox<String>();
 	private Label damageTypeLabel = new Label("Damage Type: ");
 	private CheckBox isCritValidCheck = new CheckBox("is Crit Valid?");
+	
+	private ComboBox<String> damageTypeCombo = new ComboBox<String>();
+	private ComboBox<String> targetTypeCombo = new ComboBox<String>();
+	private ComboBox<String> effectListCombo = new ComboBox<String>();
 	
 	private GridPane damageGridPane = new GridPane();
 	private GridPane healGridPane = new GridPane();
@@ -69,9 +74,9 @@ public class SkillCreator extends Application {
 	private Label targetLabel = new Label("Target: ");
 	private HBox targetHBox = new HBox();
 	
-	private Label addEffectsLabel = new Label("Add Effects: ");
-	private TextField effect1TextField = new TextField("Bleed 1");
-	private TextField effect2TextField = new TextField("Vestal Stun 1");
+	private Label addEffectsLabel = new Label("   Select or" + '\n' + "Type Effects:");
+	private TextField effect1TextField = new TextField();
+	private TextField effect2TextField = new TextField();
 	private TextField effect3TextField = new TextField();
 	private TextField effect4TextField = new TextField();
 	private TextField effect5TextField = new TextField();
@@ -120,6 +125,14 @@ public class SkillCreator extends Application {
 	private String effect4StringNoNum = "";
 	private String effect5StringNoNum = "";
 	
+	private TabPane layoutTabPane  = new TabPane();
+	private FlowPane flowPane1 = new FlowPane();
+	private Tab tab1 = new Tab("Add Attack Style");
+    private Tab tab2 = new Tab("Add Effects");
+    private Tab tab3 = new Tab("Generate");
+    
+    private Button addEffectButton = new Button("Add Effect");
+	
 	
 	public static void main(String[] args) {
 	    launch(args);
@@ -130,23 +143,69 @@ public class SkillCreator extends Application {
 	   public void start(Stage primaryStage) throws Exception {
 		
 		///////////////Visible
-		isCritValidCheck.setVisible(true);
+		perLevelLabel.setVisible(true);
+		dpsPerLevelGridPane.setVisible(true);
+		multipleTargetsCheck.setVisible(true);
+		damageTypeLabel.setVisible(true);
+		playerLabel.setVisible(true);
+		targetHBox.setVisible(true);
+		enemyHBox.setVisible(true);
+		playerHBox.setVisible(true);
 		damageGridPane.setVisible(true);
+		isCritValidCheck.setVisible(true);
+		damageTypeCombo.setVisible(true);
+		skillNameLabel.setVisible(true);
+		skillNameTextField.setVisible(true);
+		incrEffectsCheck.setVisible(false);
+		healPerLevelGridPane.setVisible(false);
+		moveBackwardLabel.setVisible(false);
+		moveForwardLabel.setVisible(false);
+		generationCheck.setVisible(false);
+		skillBattleLimitLabel.setVisible(false);
+		skillBattleLimitTextField.setVisible(false);
+		moveForwardTextField.setVisible(false);
+		moveBackwardTextField.setVisible(false);
+		copyButton.setVisible(false);
+		addEffectsLabel.setVisible(false);
+		invalidingCheck.setVisible(false);
 		healGridPane.setVisible(false);
-
+		effectsVBox.setVisible(false);
+		successLabel.setVisible(false);
+		errorLabel.setVisible(false);
+		effectListCombo.setVisible(false);
+		addEffectButton.setVisible(false);
 		
 		///////////////Primary scene
 		root = new Group();
-		scene = new Scene(root, 557.0, 620.0, Color.MIDNIGHTBLUE);
-		primaryStage.setTitle("Darkest Dungeon Skill Creator");
+		scene = new Scene(root, 557.0, 350.0, Color.BLACK); //DARKSLATEGREY
+		scene.getStylesheets().add("tabBackground.css");
 		
+		primaryStage.setResizable(false);
+		primaryStage.sizeToScene();
+		primaryStage.setTitle("Darkest Dungeon Skill Creator");
+
+		layoutTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		
+		flowPane1.prefHeightProperty().bind(scene.heightProperty());
+        flowPane1.prefWidthProperty().bind(scene.widthProperty());
+       
+        tab1.setContent(flowPane1);
+        layoutTabPane.getTabs().add(tab1);
+        layoutTabPane.getTabs().add(tab2);
+        layoutTabPane.getTabs().add(tab3);
+        
+      
+        
 		damageTypeCombo.getItems().addAll("Melee", "Range", "Heal");
 		damageTypeCombo.getSelectionModel().selectFirst();
 		
 		targetTypeCombo.getItems().addAll("Enemy", "Allies", "Self");
 		targetTypeCombo.getSelectionModel().selectFirst();
-		incrEffectsCheck.setSelected(true);
 		
+		effectListCombo.getItems().addAll("Absolution Heal 1" , "Absolution HealStress 1" , "Abom Vomit 1" , "Abyssal Killer 1" , "Abyssal Stun 1" , "Adrenaline 1" , "Antiq Blight 1" , "Antiq Blight Buff 1" , "Antiq Blight Debuff 1" , "Antiq Cower 1" , "Antiq DefBuff 1" , "Antiq Distract 1" , "Antiq Dodge 1" , "Antiq ProtectMe Guard" , "Antiq ProtectMe ClearGuardsPerformer" , "Antiq ProtectMe ClearGuardsTarget" , "Antiq Self Speed 1" , "Antiq Slowdown" , "Arb Mark Debuff 1" , "Arb Mark Target" , "Arb Self Speed 1" , "Arb Stacking Heal 1" , "Beast Killer 1" , "beast_buff_1" , "beast_buff2_1" , "Bellow Crit 1" , "BH Dmg Marked" , "BH Mark Debuff 1" , "BH Mark Target" , "BH Minor Mark" , "BH Self Speed 1" , "Bleed 1" , "Bleed Debuff 1" , "Blight 1" , "Blight Debuff 1" , "Bolo Push 1A" , "Bolster 1" , "Bolster Stress Buff 1" , "Build to Finale" , "Build to Finale 2" , "Build to Finale Song" , "Bulwark 1" , "Caltrops Prey Debuff 1" , "Caltrops SPD Debuff 1" , "Command 1" , "Crusader Bulwark 1" , "Crusader HealStress 1" , "Crusader Light 1" , "Cure" , "Cureself" , "Cure Self" , "Damage Buff 1" , "Darkness 1" , "Dazzling Light 1" , "Deadly Buff 1" , "Defender 1" , "Disorient 1" , "Disease" , "Disrupt 1" , "Dodge 1" , "Dodge Curse 1" , "Eldritch Killer 1" , "Embolden Team 1" , "FlareLight 1" , "Fortify Resists 1" , "Grapeshot Vulnerability 1" , "GR Acc Buff 1" , "GR Bleed Debuff 1" , "GR Blight 1" , "GR Blight Debuff 1" , "GR Dagger Dmg Marked 1" , "GR Dodge 1" , "GR Fade Attack 1" , "GR Self Speed 1" , "Harry Bleed 1" , "HealSelf 1" , "HealSelfStress 1" , "Hellion Exhaust" , "Hellion Exhaust Sm" , "HellionHealSelf 1" , "Hero Strong Stun 1" , "HM Dmg Marked 1" , "HM Guard 1" , "HM Mark Target" , "Hound Bleed 1" , "Hound Debuff 1" , "Hound Howl 1" , "Hound Protect 1" , "HW Open Vein Bleed Debuff 1" , "HW Open Vein SPD Debuff 1" , "HW Pistol Dmg Marked 1" , "Hwy Riposte 1" , "InspiringTune 1" , "Jester Self Speed 1" , "Jester Spotlight 1" , "Jester Tune Buff 1" , "LeperHealSelf 1" , "LeperHealSelfStress 1" , "Leper Acc" , "Leper Hype 1" , "Leper Intimidate 1" , "Leper Mark Self" , "Leper Protect 1" , "Leper Resist Buff 1" , "Leper Strength 1" , "Leper Vulnerability" , "Lick Wounds 1" , "Light 1" , "MAA Guard 1" , "MAA Riposte 1" , "Manacles Stun 1" , "Mark Target" , "Mark performer" , "Mark Self" , "Man Killer 1" , "Minor Bleed 1" , "Mortal Weakness" , "Mortal Weakness HP" , "Mortal Weakness Stress" , "MultiStun 1" , "Noxious Debuff 1" , "Occ Weakening Curse 1" , "Occ Weaken Prot 1" , "Occ Vulnerability Curse 1" , "PD Blight 1" , "PD Disorienting Stun 1" , "PD Single Blight 1" , "PD Vapours Buff 1" , "Poison Killer 1" , "rakebuff_1" , "Self Speed" , "Self Speed 1" , "Shadow Blood 1" , "Shuffle Party 1" , "Shuffle Target" , "Shuffle Self" , "Slam Debuff 1" , "Sniper Damage 1" , "Solo Mark Self" , "Stacking Damage" , "Stacking Heal 1" , "Stress 1" , "Strong Bleed 1" , "Strong Blight 1" , "Strong Stun 1" , "Stun 1" , "Stun Killer 1" , "Suppression 1" , "switch_mode_beast_self" , "switch_mode_human_self" , "Tracking Buff 1" , "Unholy Killer 1" , "Vestal HealSelf 1" , "Vestal Inspiration 1" , "Vestal Light 1" , "Vestal Stun 1" , "Vomit Debuff 1" , "Vulnerability Curse 1" , "Weak Blight 1" , "Weak Stun 1" , "Weakening Curse 1" , "Whistle Target 1" , "Wyrd Bleed 1" , "xform_damage_1");
+		effectListCombo.getSelectionModel().selectFirst();
+		incrEffectsCheck.setSelected(true);
+		invalidingCheck.setSelected(true);
 		
 		//////Help Button info
 		infoButtonProperties(helpButton);
@@ -335,23 +394,23 @@ public class SkillCreator extends Application {
 							String effect4String = effect4TextField.getText().toString();
 							String effect5String = effect5TextField.getText().toString();
 							
-							if(effect1String.contains(" 1")) {
+							if((effect1String.contains("_1") || effect1String.contains(" 1")) && !effect1String.contains(" 1A") && !effect1String.contains(" 1B") && !effect1String.contains(" 1C") && !effect1String.contains(" 1D") && !effect1String.contains(" 1E") && !effect1String.contains("Guard 1")) {
 								string1Boolean = true;
 								effect1StringNoNum = effect1String.substring(0, effect1String.length()-2); 
 							}
-							if(effect2String.contains(" 1")) {
+							if((effect2String.contains("_1") || effect2String.contains(" 1")) && !effect2String.contains(" 1A") && !effect2String.contains(" 1B") && !effect2String.contains(" 1C") && !effect2String.contains(" 1D") && !effect2String.contains(" 1E") && !effect2String.contains("Guard 1")) {
 								string2Boolean = true;
 								effect2StringNoNum = effect2String.substring(0, effect2String.length()-2);
 							}
-							if(effect3String.contains(" 1")) {
+							if((effect3String.contains("_1") || effect3String.contains(" 1")) && !effect3String.contains(" 1A") && !effect3String.contains(" 1B") && !effect3String.contains(" 1C") && !effect3String.contains(" 1D") && !effect3String.contains(" 1E") && !effect3String.contains("Guard 1")) {
 								string3Boolean = true;	
 								effect3StringNoNum = effect3String.substring(0, effect3String.length()-2); 
 							}
-							if(effect4String.contains(" 1")) {
+							if((effect4String.contains("_1") || effect4String.contains(" 1")) && !effect4String.contains(" 1A") && !effect4String.contains(" 1B") && !effect4String.contains(" 1C") && !effect4String.contains(" 1D") && !effect4String.contains(" 1E") && !effect4String.contains("Guard 1")) {
 								string4Boolean = true;
 								effect4StringNoNum = effect4String.substring(0, effect4String.length()-2); 
 							}
-							if(effect5String.contains(" 1")) {
+							if((effect5String.contains("_1") || effect5String.contains(" 1")) && !effect5String.contains(" 1A") && !effect5String.contains(" 1B") && !effect5String.contains(" 1C") && !effect5String.contains(" 1D") && !effect5String.contains(" 1E") && !effect5String.contains("Guard 1")) {
 								string5Boolean = true;
 								effect5StringNoNum = effect5String.substring(0, effect5String.length()-2);
 							}
@@ -495,163 +554,313 @@ public class SkillCreator extends Application {
 			}
 		});
 		
+		addEffectButton.setOnAction(e -> {
+			if(effect1TextField.getText().toString().matches("") || effect1TextField.getText().toString().matches(" ")) {
+				effect1TextField.setText(effectListCombo.getValue().toString());
+			} else if(effect2TextField.getText().toString().matches("") || effect2TextField.getText().toString().matches(" ")) {
+				effect2TextField.setText(effectListCombo.getValue().toString());
+			} else if(effect3TextField.getText().toString().matches("") || effect3TextField.getText().toString().matches(" ")) {
+				effect3TextField.setText(effectListCombo.getValue().toString());
+			} else if(effect4TextField.getText().toString().matches("") || effect4TextField.getText().toString().matches(" ")) {
+				effect4TextField.setText(effectListCombo.getValue().toString());
+			} else if(effect5TextField.getText().toString().matches("") || effect5TextField.getText().toString().matches(" ")) {
+				effect5TextField.setText(effectListCombo.getValue().toString());
+			}
+		});
 		
+		
+		tab1.setOnSelectionChanged(e -> {
+			if(tab1.isSelected()) {
+				
+				perLevelLabel.setVisible(true);
+				damageTypeLabel.setVisible(true);
+				playerLabel.setVisible(true);
+				targetHBox.setVisible(true);
+				playerHBox.setVisible(true);
+				damageTypeCombo.setVisible(true);
+				skillNameLabel.setVisible(true);
+				skillNameTextField.setVisible(true);
+				
+				incrEffectsCheck.setVisible(false);
+				moveBackwardLabel.setVisible(false);
+				moveForwardLabel.setVisible(false);
+				generationCheck.setVisible(false);
+				skillBattleLimitLabel.setVisible(false);
+				skillBattleLimitTextField.setVisible(false);
+				moveForwardTextField.setVisible(false);
+				moveBackwardTextField.setVisible(false);
+				copyButton.setVisible(false);
+				addEffectsLabel.setVisible(false);
+				invalidingCheck.setVisible(false);
+				effectsVBox.setVisible(false);
+				effectListCombo.setVisible(false);
+				addEffectButton.setVisible(false);
+				
+				if(damageTypeCombo.getValue().toString() == "Heal") {
+					healGridPane.setVisible(true);
+					healPerLevelGridPane.setVisible(true);
+					damageGridPane.setVisible(false);
+					dpsPerLevelGridPane.setVisible(false);
+					isCritValidCheck.setVisible(false);
+				} else {
+					damageGridPane.setVisible(true);
+					dpsPerLevelGridPane.setVisible(true);
+					isCritValidCheck.setVisible(true);
+					healGridPane.setVisible(false);
+					healPerLevelGridPane.setVisible(false);
+				}
+				
+				if(targetTypeCombo.getValue().toString() == "Self") {
+					multipleTargetsCheck.setVisible(false);
+					enemyHBox.setVisible(false);
+				} else {
+					multipleTargetsCheck.setVisible(true);
+					enemyHBox.setVisible(true);
+					
+				}
+			}
+		});
+		
+		tab2.setOnSelectionChanged(e -> {
+			if(tab2.isSelected()) {
+				
+				incrEffectsCheck.setVisible(true);
+				addEffectsLabel.setVisible(true);
+				effectsVBox.setVisible(true);
+				effectListCombo.setVisible(true);
+				addEffectButton.setVisible(true);
+				
+				invalidingCheck.setVisible(false);
+				healGridPane.setVisible(false);
+				moveBackwardLabel.setVisible(false);
+				moveForwardLabel.setVisible(false);
+				generationCheck.setVisible(false);
+				skillBattleLimitLabel.setVisible(false);
+				skillBattleLimitTextField.setVisible(false);
+				moveForwardTextField.setVisible(false);
+				moveBackwardTextField.setVisible(false);
+				copyButton.setVisible(false);
+				healPerLevelGridPane.setVisible(false);
+				perLevelLabel.setVisible(false);
+				dpsPerLevelGridPane.setVisible(false);
+				multipleTargetsCheck.setVisible(false);
+				damageTypeLabel.setVisible(false);
+				playerLabel.setVisible(false);
+				targetHBox.setVisible(false);
+				enemyHBox.setVisible(false);
+				playerHBox.setVisible(false);
+				damageGridPane.setVisible(false);
+				isCritValidCheck.setVisible(false);
+				damageTypeCombo.setVisible(false);
+				skillNameLabel.setVisible(false);
+				skillNameTextField.setVisible(false);
+			}
+		});
+		
+		
+		tab3.setOnSelectionChanged(e -> {
+			if(tab3.isSelected()) {
+				
+				moveBackwardLabel.setVisible(true);
+				moveForwardLabel.setVisible(true);
+				generationCheck.setVisible(true);
+				skillBattleLimitLabel.setVisible(true);
+				skillBattleLimitTextField.setVisible(true);
+				moveForwardTextField.setVisible(true);
+				moveBackwardTextField.setVisible(true);
+				copyButton.setVisible(true);
+				invalidingCheck.setVisible(true);
+				
+				effectListCombo.setVisible(false);
+				healPerLevelGridPane.setVisible(false);
+				healGridPane.setVisible(false);
+				incrEffectsCheck.setVisible(false);
+				addEffectsLabel.setVisible(false);
+				effectsVBox.setVisible(false);
+				perLevelLabel.setVisible(false);
+				dpsPerLevelGridPane.setVisible(false);
+				multipleTargetsCheck.setVisible(false);
+				damageTypeLabel.setVisible(false);
+				playerLabel.setVisible(false);
+				targetHBox.setVisible(false);
+				enemyHBox.setVisible(false);
+				playerHBox.setVisible(false);
+				damageGridPane.setVisible(false);
+				isCritValidCheck.setVisible(false);
+				damageTypeCombo.setVisible(false);
+				skillNameLabel.setVisible(false);
+				skillNameTextField.setVisible(false);
+				addEffectButton.setVisible(false);
+			}
+		});
+		
+		int moveDmgGUIX = -30;
+		int moveDmgGUIY = 30;
+		int moveEffectGUIX = -20;
+		int moveEffectGUIY = -205;
+		int moveGenGUIX = 10;
+		int moveGenGUIY = -340;
 		///////////////Set Coordinates	
+		////Cyan: "#00ffffff" , Lightpink: "#dda0ddff", Green: "#00ff7fff"
 		skillNameLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 18.0));
-		skillNameLabel.setLayoutX(144.0);
-		skillNameLabel.setLayoutY(27.0); 
-		skillNameLabel.setTextFill(Color.web("#ff8c00ff"));
+		skillNameLabel.setLayoutX(154.0+moveDmgGUIX);
+		skillNameLabel.setLayoutY(27.0+moveDmgGUIY); 
+		skillNameLabel.setTextFill(Color.web("#00ffffff"));
 		
-		skillNameTextField.setLayoutX(250.0);
-		skillNameTextField.setLayoutY(27.0);
+		skillNameTextField.setLayoutX(260.0+moveDmgGUIX);
+		skillNameTextField.setLayoutY(27.0+moveDmgGUIY);
+
+		damageTypeCombo.setLayoutX(107.0+moveDmgGUIX);
+		damageTypeCombo.setLayoutY(106.0+moveDmgGUIY);
 		
-		damageTypeCombo.setLayoutX(107.0);
-		damageTypeCombo.setLayoutY(106.0);
-		
-		attackLabel.setTextFill(Color.web("#ff8c00ff"));
+		attackLabel.setTextFill(Color.web("#00ff7fff"));
 		attackLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
-		damageLabel.setTextFill(Color.web("#ff8c00ff"));
+		damageLabel.setTextFill(Color.web("#00ff7fff"));
 		damageLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
-		critLabel.setTextFill(Color.web("#ff8c00ff"));
+		critLabel.setTextFill(Color.web("#00ff7fff"));
 		critLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
 
-		dpsPerLevelGridPane.setLayoutX(350);
-		dpsPerLevelGridPane.setLayoutY(80.0);
+		dpsPerLevelGridPane.setLayoutX(350+moveDmgGUIX);
+		dpsPerLevelGridPane.setLayoutY(80.0+moveDmgGUIY);
 		dpsPerLevelGridPane.setVgap(3);
 		attackPerLevelTextField.setPrefWidth(42);
 		damagePerLevelTextField.setPrefWidth(42);
 		critPerLevelTextField.setPrefWidth(42);
 		
-		damageGridPane.setLayoutX(218.0);
-		damageGridPane.setLayoutY(80.0);
+		damageGridPane.setLayoutX(218.0+moveDmgGUIX);
+		damageGridPane.setLayoutY(80.0+moveDmgGUIY);
 		damageGridPane.setVgap(3);
 		attackTextField.setPrefWidth(42);
 		damageTextField.setPrefWidth(42);
 		critTextField.setPrefWidth(42);
 		
-		healHighLabel.setTextFill(Color.web("#ff8c00ff"));
+		healHighLabel.setTextFill(Color.web("#00ff7fff"));
 		healHighLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
-		healLowLabel.setTextFill(Color.web("#ff8c00ff"));
+		healLowLabel.setTextFill(Color.web("#00ff7fff"));
 		healLowLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
 		
-		healGridPane.setLayoutX(218.0); 
-		healGridPane.setLayoutY(90.0);
+		healGridPane.setLayoutX(218.0+moveDmgGUIX); 
+		healGridPane.setLayoutY(90.0+moveDmgGUIY);
 		healGridPane.setVgap(3);
 		
 		healHighTextField.setPrefWidth(42);
 		healLowTextField.setPrefWidth(42);
 		
 		healPerLevelGridPane.setVisible(false);
-		healPerLevelGridPane.setLayoutX(348.0);
-		healPerLevelGridPane.setLayoutY(91.0);
+		healPerLevelGridPane.setLayoutX(348.0+moveDmgGUIX);
+		healPerLevelGridPane.setLayoutY(91.0+moveDmgGUIY);
 		healPerLevelGridPane.setVgap(3);
 		healHighPerLevelTextField.setPrefWidth(42);
 		healLowPerLevelTextField.setPrefWidth(42);
 
 		isCritValidCheck.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
-		isCritValidCheck.setLayoutX(440.0);
-		isCritValidCheck.setLayoutY(100.0); 
-		isCritValidCheck.setTextFill(Color.web("#ff8c00ff"));
+		isCritValidCheck.setLayoutX(440.0+moveDmgGUIX);
+		isCritValidCheck.setLayoutY(100.0+moveDmgGUIY); 
+		isCritValidCheck.setTextFill(Color.web("#dda0ddff"));
 		
-		playerHBox.setLayoutX(96.0);
-		playerHBox.setLayoutY(242.0); 
+		playerHBox.setLayoutX(96.0+moveDmgGUIX);
+		playerHBox.setLayoutY(242.0+moveDmgGUIY); 
 		
-		enemyHBox.setLayoutX(413.0);
-		enemyHBox.setLayoutY(251.0);
+		enemyHBox.setLayoutX(413.0+moveDmgGUIX);
+		enemyHBox.setLayoutY(251.0+moveDmgGUIY);
 		
-		effectsVBox.setLayoutX(222.0);
-		effectsVBox.setLayoutY(278.0);
+		effectsVBox.setLayoutX(222.0+moveEffectGUIX);
+		effectsVBox.setLayoutY(278.0+moveEffectGUIY);
 		effectsVBox.setSpacing(3);
 		
-		playerLabel.setLayoutX(80.0);
-		playerLabel.setLayoutY(213.0);
-		playerLabel.setTextFill(Color.web("#ff8c00ff"));
+		playerLabel.setLayoutX(80.0+moveDmgGUIX);
+		playerLabel.setLayoutY(213.0+moveDmgGUIY);
+		playerLabel.setTextFill(Color.web("#00ffffff"));
 		playerLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 14.0));
 		
-		targetLabel.setTextFill(Color.web("#ff8c00ff"));
+		targetLabel.setTextFill(Color.web("#00ffffff"));
 		targetLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 14.0));
-		targetHBox.setLayoutX(375.0);
-		targetHBox.setLayoutY(213.0);
+		targetHBox.setLayoutX(375.0+moveDmgGUIX);
+		targetHBox.setLayoutY(213.0+moveDmgGUIY);
 
-		generationCheck.setLayoutX(220.0);
-		generationCheck.setLayoutY(537.0);
-		generationCheck.setTextFill(Color.web("#ff8c00ff"));
+		generationCheck.setLayoutX(220.0+moveGenGUIX);
+		generationCheck.setLayoutY(537.0+moveGenGUIY);
+		generationCheck.setTextFill(Color.web("#dda0ddff"));
 		generationCheck.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
 
-		invalidingCheck.setLayoutX(220.0);
-		invalidingCheck.setLayoutY(440.0);
-		invalidingCheck.setTextFill(Color.web("#ff8c00ff"));
+		invalidingCheck.setLayoutX(220.0+moveGenGUIX);
+		invalidingCheck.setLayoutY(440.0+moveGenGUIY);
+		invalidingCheck.setTextFill(Color.web("#dda0ddff"));
 		invalidingCheck.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
 		
-		addEffectsLabel.setLayoutX(123.0);
-		addEffectsLabel.setLayoutY(329.0);
-		addEffectsLabel.setTextFill(Color.web("#ff8c00ff"));
+		addEffectsLabel.setLayoutX(123.0+moveEffectGUIX);
+		addEffectsLabel.setLayoutY(329.0+moveEffectGUIY);
+		addEffectsLabel.setTextFill(Color.web("#00ffffff"));
 		addEffectsLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 14.0));
 		
-		damageTypeLabel.setLayoutX(90.0);
-		damageTypeLabel.setLayoutY(79.0);
-		damageTypeLabel.setTextFill(Color.web("#ff8c00ff"));
+		damageTypeLabel.setLayoutX(90.0+moveDmgGUIX);
+		damageTypeLabel.setLayoutY(79.0+moveDmgGUIY);
+		damageTypeLabel.setTextFill(Color.web("#00ffffff"));
 		damageTypeLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 14.0));
 		
-		multipleTargetsCheck.setLayoutX(442.0);
-		multipleTargetsCheck.setLayoutY(182.0);
-		multipleTargetsCheck.setTextFill(Color.web("#ff8c00ff"));
+		multipleTargetsCheck.setLayoutX(442.0+moveDmgGUIX);
+		multipleTargetsCheck.setLayoutY(182.0+moveDmgGUIY);
+		multipleTargetsCheck.setTextFill(Color.web("#dda0ddff"));
 		multipleTargetsCheck.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 14.0));
 		
-		helpButton.setLayoutX(478.0);
-		helpButton.setLayoutY(21.0);
+		helpButton.setLayoutX(395);
+		helpButton.setLayoutY(3);
 		
-		copyButton.setLayoutX(219.0);
-		copyButton.setLayoutY(575.0);
+		copyButton.setLayoutX(219.0+moveGenGUIX);
+		copyButton.setLayoutY(575.0+moveGenGUIY);
 		
-		moveForwardTextField.setLayoutX(260.0);
-		moveForwardTextField.setLayoutY(466.0);
+		moveForwardTextField.setLayoutX(260.0+moveGenGUIX);
+		moveForwardTextField.setLayoutY(466.0+moveGenGUIY);
 		moveForwardTextField.setPrefWidth(35);
 		
-		moveBackwardTextField.setLayoutX(220.0);
-		moveBackwardTextField.setLayoutY(466.0);
+		moveBackwardTextField.setLayoutX(220.0+moveGenGUIX);
+		moveBackwardTextField.setLayoutY(466.0+moveGenGUIY);
 		moveBackwardTextField.setPrefWidth(35);
 		
-		skillBattleLimitTextField.setLayoutX(220.0);
-		skillBattleLimitTextField.setLayoutY(500.0);
+		skillBattleLimitTextField.setLayoutX(220.0+moveGenGUIX);
+		skillBattleLimitTextField.setLayoutY(500.0+moveGenGUIY);
 		skillBattleLimitTextField.setPrefWidth(35);
 		
-		skillBattleLimitLabel.setLayoutX(55.0);
-		skillBattleLimitLabel.setLayoutY(502.0);
-		skillBattleLimitLabel.setTextFill(Color.web("#ff8c00ff"));
+		skillBattleLimitLabel.setLayoutX(55.0+moveGenGUIX);
+		skillBattleLimitLabel.setLayoutY(502.0+moveGenGUIY);
+		skillBattleLimitLabel.setTextFill(Color.web("#00ffffff"));
 		skillBattleLimitLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 14.0));
 		
-		moveBackwardLabel.setLayoutX(115.0);
-		moveBackwardLabel.setLayoutY(473.0);
-		moveBackwardLabel.setTextFill(Color.web("#ff8c00ff"));
+		moveBackwardLabel.setLayoutX(115.0+moveGenGUIX);
+		moveBackwardLabel.setLayoutY(473.0+moveGenGUIY);
+		moveBackwardLabel.setTextFill(Color.web("#00ff7fff"));
 		moveBackwardLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
 		
-		moveForwardLabel.setLayoutX(301.0);
-		moveForwardLabel.setLayoutY(472.0);
-		moveForwardLabel.setTextFill(Color.web("#ff8c00ff"));
+		moveForwardLabel.setLayoutX(301.0+moveGenGUIX);
+		moveForwardLabel.setLayoutY(472.0+moveGenGUIY);
+		moveForwardLabel.setTextFill(Color.web("#00ff7fff"));
 		moveForwardLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
 		
-		successLabel.setLayoutX(341.0);
-		successLabel.setLayoutY(579.0);
+		successLabel.setLayoutX(341.0+moveGenGUIX);
+		successLabel.setLayoutY(579.0+moveGenGUIY);
 		successLabel.setTextFill(Color.LIMEGREEN);
 		successLabel.setFont(Font.font("Lucida Bright", FontWeight.BOLD,FontPosture.REGULAR, 14.0));
-		successLabel.setVisible(false);
 		
-		errorLabel.setLayoutX(341.0);
-		errorLabel.setLayoutY(579.0);
+		errorLabel.setLayoutX(341.0+moveGenGUIX);
+		errorLabel.setLayoutY(579.0+moveGenGUIY);
 		errorLabel.setTextFill(Color.YELLOW);
 		errorLabel.setFont(Font.font("Lucida Bright", FontWeight.BOLD,FontPosture.REGULAR, 14.0));
-		errorLabel.setVisible(false);
 		
-		perLevelLabel.setLayoutX(345.0);
-		perLevelLabel.setLayoutY(167.0);
-		perLevelLabel.setTextFill(Color.web("#ff8c00ff"));
+		perLevelLabel.setLayoutX(345.0+moveDmgGUIX);
+		perLevelLabel.setLayoutY(167.0+moveDmgGUIY);
+		perLevelLabel.setTextFill(Color.web("#dda0ddff"));
 		perLevelLabel.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
 		
-		incrEffectsCheck.setTextFill(Color.web("#ff8c00ff"));
+		incrEffectsCheck.setTextFill(Color.web("#dda0ddff"));
 		incrEffectsCheck.setFont(Font.font("Lucida Bright", FontWeight.NORMAL,FontPosture.REGULAR, 12.0));
-		incrEffectsCheck.setLayoutX(396.0);
-		incrEffectsCheck.setLayoutY(326.0);
+		incrEffectsCheck.setLayoutX(396.0+moveEffectGUIX);
+		incrEffectsCheck.setLayoutY(326.0+moveEffectGUIY);
+		
+		effectListCombo.setLayoutX(146);
+		effectListCombo.setLayoutY(240);
+		
+		addEffectButton.setLayoutX(238);
+		addEffectButton.setLayoutY(290);
 
 		//textDebugger(skillNameLabel, "skillNameLabel", root, scene, primaryStage);
 
@@ -696,6 +905,11 @@ public class SkillCreator extends Application {
 		targetHBox.getChildren().add(targetLabel);
 		targetHBox.getChildren().add(targetTypeCombo);
 		
+		root.getChildren().add(layoutTabPane);
+
+		
+		root.getChildren().add(addEffectButton);
+		root.getChildren().add(effectListCombo);
 		root.getChildren().add(incrEffectsCheck);
 		root.getChildren().add(healPerLevelGridPane);
 		root.getChildren().add(perLevelLabel);
@@ -757,6 +971,11 @@ public class SkillCreator extends Application {
 								tempNextLevelCode = tempNextLevelCode.replaceAll(effect1StringNoNum + " 3", effect1StringNoNum + " 4");
 								tempNextLevelCode = tempNextLevelCode.replaceAll(effect1StringNoNum + " 2", effect1StringNoNum + " 3");
 								tempNextLevelCode = tempNextLevelCode.replaceAll(effect1StringNoNum + " 1", effect1StringNoNum + " 2");
+								
+								tempNextLevelCode = tempNextLevelCode.replaceAll(effect1StringNoNum + "_4", effect1StringNoNum + "_5");
+								tempNextLevelCode = tempNextLevelCode.replaceAll(effect1StringNoNum + "_3", effect1StringNoNum + "_4");
+								tempNextLevelCode = tempNextLevelCode.replaceAll(effect1StringNoNum + "_2", effect1StringNoNum + "_3");
+								tempNextLevelCode = tempNextLevelCode.replaceAll(effect1StringNoNum + "_1", effect1StringNoNum + "_2");
 						} 
 					   
 					   if(string2Boolean == true) {
@@ -764,6 +983,11 @@ public class SkillCreator extends Application {
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect2StringNoNum + " 3", effect2StringNoNum + " 4");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect2StringNoNum + " 2", effect2StringNoNum + " 3");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect2StringNoNum + " 1", effect2StringNoNum + " 2");
+							
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect2StringNoNum + "_4", effect2StringNoNum + "_5");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect2StringNoNum + "_3", effect2StringNoNum + "_4");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect2StringNoNum + "_2", effect2StringNoNum + "_3");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect2StringNoNum + "_1", effect2StringNoNum + "_2");
 					   }
 					   
 					   if(string3Boolean == true) {
@@ -771,6 +995,11 @@ public class SkillCreator extends Application {
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect3StringNoNum + " 3", effect3StringNoNum + " 4");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect3StringNoNum + " 2", effect3StringNoNum + " 3");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect3StringNoNum + " 1", effect3StringNoNum + " 2");
+							
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect3StringNoNum + "_4", effect3StringNoNum + "_5");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect3StringNoNum + "_3", effect3StringNoNum + "_4");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect3StringNoNum + "_2", effect3StringNoNum + "_3");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect3StringNoNum + "_1", effect3StringNoNum + "_2");
 					   }
 					   
 					   if(string4Boolean == true) {
@@ -778,6 +1007,11 @@ public class SkillCreator extends Application {
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect4StringNoNum + " 3", effect4StringNoNum + " 4");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect4StringNoNum + " 2", effect4StringNoNum + " 3");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect4StringNoNum + " 1", effect4StringNoNum + " 2");
+							
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect4StringNoNum + "_4", effect4StringNoNum + "_5");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect4StringNoNum + "_3", effect4StringNoNum + "_4");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect4StringNoNum + "_2", effect4StringNoNum + "_3");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect4StringNoNum + "_1", effect4StringNoNum + "_2");
 					   }
 					   
 					   if(string5Boolean == true) {
@@ -785,6 +1019,11 @@ public class SkillCreator extends Application {
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect5StringNoNum + " 3", effect5StringNoNum + " 4");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect5StringNoNum + " 2", effect5StringNoNum + " 3");
 							tempNextLevelCode = tempNextLevelCode.replaceAll(effect5StringNoNum + " 1", effect5StringNoNum + " 2");
+							
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect5StringNoNum + "_4", effect5StringNoNum + "_5");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect5StringNoNum + "_3", effect5StringNoNum + "_4");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect5StringNoNum + "_2", effect5StringNoNum + "_3");
+							tempNextLevelCode = tempNextLevelCode.replaceAll(effect5StringNoNum + "_1", effect5StringNoNum + "_2");
 					   }
 		   }
 		   return tempNextLevelCode;
